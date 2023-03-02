@@ -32,7 +32,7 @@ class Controller():
         self.model.set_initial_offset(self.model.get_current_facing())
 
     def vibrate_at_with_offset(self, dir: int, channel = 1) -> None:
-        final_angle = self.model.get_desired_direction() - self.model.get_desired_direction()
+        final_angle = dir - self.model.get_current_facing()
         final_angle = final_angle % 360
 
         self._belt_controller.vibrate_at_angle(final_angle, channel_index=channel)
