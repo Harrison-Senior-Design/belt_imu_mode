@@ -4,7 +4,7 @@
 
 Requirements:
 
-- Python 3.9
+- Python 3.8
 - Poetry v1.3.2
 
 After cloing this repository
