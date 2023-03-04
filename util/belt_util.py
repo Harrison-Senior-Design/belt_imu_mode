@@ -120,9 +120,3 @@ def connect_belt(controller: Controller) -> BeltController:
 	belt_controller.stop_vibration()
 
 	return belt_controller
-
-
-def disconnect_belt(controller: BeltController) -> None:
-	controller.stop_vibration()
-	controller.disconnect_belt()
-	controller.set_belt_mode(BeltMode.PAUSE)
