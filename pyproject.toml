@@ -7,7 +7,7 @@ readme = "README.md"
 packages = [{include = "belt_imu_mode"}]
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.8"
 pybelt = "^1.0.5"
 pyserial = "^3.5"
 pillow = "^9.4.0"
