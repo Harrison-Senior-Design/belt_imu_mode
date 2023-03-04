@@ -13,7 +13,7 @@ class Model():
 
     def get_is_calibrated(self) -> bool:
         return self._is_calibrated
-    
+
     def set_is_calibrated(self, calibrated: bool) -> None:
         self._is_calibrated = calibrated
 
@@ -28,13 +28,15 @@ class Model():
         self._directions.append(dir)
 
     def next_direction(self) -> None:
-        self._direction_index = (self._direction_index + 1) % len(self._directions)
+        self._direction_index = (
+            self._direction_index + 1) % len(self._directions)
 
     def prev_direction(self) -> None:
-        self._direction_index = (self._direction_index - 1) % len(self._directions)
+        self._direction_index = (
+            self._direction_index - 1) % len(self._directions)
 
     def get_desired_direction(self) -> Optional[int]:
         if len(self._directions) <= self._direction_index:
             return None
-        
+
         return self._directions[self._direction_index]

@@ -5,6 +5,7 @@ from constants import VIBRATION_INTENSITY, ButtonIDs
 
 from views.view import View
 
+
 class Controller():
     _lock = threading.Lock()
     _belt_controller = None
@@ -71,7 +72,11 @@ class Controller():
             intensity=VIBRATION_INTENSITY,
             switch_to_app_mode=True)
 
-    def belt_event_button_pressed(self, button_id, previous_mode, new_mode) -> None:
+    def belt_event_button_pressed(
+            self,
+            button_id,
+            previous_mode,
+            new_mode) -> None:
         if new_mode != BeltMode.APP_MODE:
             print(f"back to app mode!!")
             self._belt_controller.set_belt_mode(BeltMode.APP_MODE)
@@ -94,12 +99,16 @@ class Controller():
         with self._lock:
             self.model.prev_direction()
 
-    def belt_event_orientation_notified(self, heading, is_orientation_accurate, extra) -> None:
+    def belt_event_orientation_notified(
+            self,
+            heading,
+            is_orientation_accurate,
+            extra) -> None:
         with self._lock:
             self.model.set_current_facing(heading)
 
             desired_direction = self.model.get_desired_direction()
-            if desired_direction != None:
+            if desired_direction is not None:
                 self.vibrate_at_with_offset(desired_direction)
 
     def render_views(self) -> None:
