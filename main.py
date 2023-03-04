@@ -27,8 +27,8 @@ def handle_input(controller, action):
     else:
         print("Unrecognized input.")
 
-def get_key():
-    while True:
+def get_key(controller):
+    while controller.is_connected():
         try:
             action = input()
 
@@ -43,7 +43,7 @@ def get_key():
 def keyboard_thread(controller):
     while controller.is_connected():
         print("Q to quit.\nC to calibrate.\n")
-        key = get_key()  
+        key = get_key(controller)  
 
         try:
             handle_input(controller, key)
