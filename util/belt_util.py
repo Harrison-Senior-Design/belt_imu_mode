@@ -2,16 +2,11 @@ import serial
 import pybelt
 import sys
 import logging
-import threading
-import SharedData
 
-from serial.tools import list_ports
-
+from controller import Controller
 from pybelt.belt_controller import BeltController, BeltMode, BeltConnectionState, BeltControllerDelegate, BeltVibrationTimerOption, BeltOrientationType
-from pybelt.belt_scanner import BeltScanner
 
-
-def interactive_belt_connection(belt_controller):
+def interactive_belt_connection(belt_controller: BeltController) -> None:
 	"""Procedures to connect a belt using the terminal.
 	The procedure asks for the interface to use (serial port or Bluetooth) and connects the belt-controller using it.
 	:param BeltController belt_controller: The belt-controller to connect.
@@ -86,7 +81,7 @@ def interactive_belt_connection(belt_controller):
 		belt_controller.connect(selected_interface)
 
 
-def belt_controller_log_to_stdout():
+def belt_controller_log_to_stdout() -> None:
 	"""Configures the belt-controller logger to print all debug messages on `stdout`.
 	"""
 	logger = pybelt.logger
@@ -99,17 +94,21 @@ def belt_controller_log_to_stdout():
 	logger.addHandler(sh)
 
 class Delegate(BeltControllerDelegate):
+	_controller = None
+
+	def __init__(self, controller: Controller):
+		self._controller = controller
+
 	def on_belt_button_pressed(self, button_id, previous_mode, new_mode):
-		print(f"Button pressed: {button_id}, {previous_mode}, {new_mode}")
+		self._controller.belt_event_button_pressed(button_id, previous_mode, new_mode)
 
 	def on_belt_orientation_notified(self, heading, is_orientation_accurate, extra):
-		### TODO self.vibrate_at_angle(heading-value) ###
-		print(f"Belt orientation: {heading}, {is_orientation_accurate}, {extra}")
+		self._controller.belt_event_orientation_notified(heading, is_orientation_accurate, extra)
 
-def connect_belt():
+def connect_belt(controller: Controller) -> BeltController:
 	belt_controller_log_to_stdout()
 
-	belt_controller_delegate = Delegate()
+	belt_controller_delegate = Delegate(controller)
 	belt_controller = BeltController(belt_controller_delegate)
 	interactive_belt_connection(belt_controller)
 
@@ -121,9 +120,3 @@ def connect_belt():
 	belt_controller.stop_vibration()
 
 	return belt_controller
-
-
-def disconnect_belt(controller):
-	controller.stop_vibration()
-	controller.disconnect_belt()
-	controller.set_belt_mode(BeltMode.PAUSE)
