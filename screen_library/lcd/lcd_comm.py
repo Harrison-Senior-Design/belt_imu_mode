@@ -172,7 +172,7 @@ class LcdComm(ABC):
             text: str,
             x: int = 0,
             y: int = 0,
-            font: str = "roboto-mono/RobotoMono-Regular.ttf",
+            font: str = "./assets/fonts/roboto-mono/RobotoMono-Regular.ttf",
             font_size: int = 20,
             font_color: Tuple[int, int, int] = (0, 0, 0),
             background_color: Tuple[int, int, int] = (255, 255, 255),
@@ -207,7 +207,7 @@ class LcdComm(ABC):
             text_image = Image.open(background_image)
 
         # Get text bounding box
-        font = ImageFont.truetype("./res/fonts/" + font, font_size)
+        font = ImageFont.truetype(font, font_size)
         d = ImageDraw.Draw(text_image)
         left, top, text_width, text_height = d.textbbox((0, 0), text, font=font)
 
