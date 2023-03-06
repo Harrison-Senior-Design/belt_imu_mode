@@ -4,11 +4,15 @@ from time import sleep
 
 from controller import Controller
 from util.belt_util import init_belt
+from view_thread import view_thread_entrypoint
 from views.usb_view import USBView
 from keyboard_input import keyboard_thread
 
 
 def main():
+    """
+    Main function of entire program
+    """
     controller = Controller()
 
     belt_controller = init_belt(controller)
@@ -18,13 +22,12 @@ def main():
 
     controller.add_view(usb_screen_view)
 
-    prev_heading = 0
-    for heading in range(0, 90):
-        usb_screen_view.render(prev_heading, heading)
-        prev_heading = heading
-
     kb_thread = threading.Thread(target=keyboard_thread, args=(controller,))
     kb_thread.start()
+
+    view_thread = threading.Thread(
+        target=view_thread_entrypoint, args=(controller,))
+    view_thread.start()
 
     while controller.enabled:
         if not controller.is_connected() and controller.enabled:
@@ -32,7 +35,8 @@ def main():
 
         sleep(1)
 
-    # join thread after controlled is "disabled"
+    # join threads after controlled is "disabled"
+    view_thread.join()
     kb_thread.join()
 
 

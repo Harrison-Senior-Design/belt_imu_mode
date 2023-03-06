@@ -2,12 +2,11 @@ from serial.tools.list_ports import comports
 
 
 def handle_input(controller, action):
+    """
+    Handle a keypress
+    """
     if action == "c":
         controller.calibrate()
-    elif action == "r":
-        print("Rendering all views")
-
-        controller.render_views()
     elif action == "q":
         print("Quitting program")
         controller.cleanup()
@@ -21,6 +20,9 @@ def handle_input(controller, action):
 
 
 def get_key(controller):
+    """
+    Get a key from the standard input
+    """
     while controller.enabled:
         try:
             action = input()
@@ -37,6 +39,9 @@ def get_key(controller):
 
 
 def keyboard_thread(controller):
+    """
+    Entrypoint for thread listening for keyboard buttons
+    """
     while controller.enabled:
         print("Q to quit.\nC to calibrate.\n")
         key = get_key(controller)
