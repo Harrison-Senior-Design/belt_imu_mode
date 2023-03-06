@@ -4,11 +4,14 @@ from pybelt.belt_controller import BeltMode, BeltController, BeltConnectionState
 from constants import VIBRATION_INTENSITY, ButtonIDs
 
 from views.view import View
+from util.belt_util import auto_belt_connection
 
 
 class Controller():
     _lock = threading.Lock()
     _belt_controller = None
+
+    enabled = True
 
     views = []
     model = None
@@ -30,12 +33,18 @@ class Controller():
             view.cleanup()
         self.views.clear()
 
-        self._belt_controller.stop_vibration()
-        self._belt_controller.set_belt_mode(BeltMode.PAUSE)
-        self._belt_controller.disconnect_belt()
+        self.enabled = False
+
+        if self.is_connected():
+            self._belt_controller.stop_vibration()
+            self._belt_controller.set_belt_mode(BeltMode.PAUSE)
+            self._belt_controller.disconnect_belt()
 
     def is_connected(self) -> bool:
         return self._belt_controller.get_connection_state() == BeltConnectionState.CONNECTED
+
+    def reconnect(self):
+        return auto_belt_connection(self, self._belt_controller)
 
     def calibrate(self) -> None:
         with self._lock:
@@ -78,7 +87,6 @@ class Controller():
             previous_mode,
             new_mode) -> None:
         if new_mode != BeltMode.APP_MODE:
-            print(f"back to app mode!!")
             self._belt_controller.set_belt_mode(BeltMode.APP_MODE)
 
         if button_id == ButtonIDs.COMPASS.value:
