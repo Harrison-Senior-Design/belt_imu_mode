@@ -14,9 +14,14 @@ def main():
     belt_controller = init_belt(controller)
     controller.set_belt_controller(belt_controller)
 
-    # usb_screen_view = USBView(controller)
+    usb_screen_view = USBView(controller)
 
-    # controller.add_view(usb_screen_view)
+    controller.add_view(usb_screen_view)
+
+    prev_heading = 0
+    for heading in range(0, 90):
+        usb_screen_view.render(prev_heading, heading)
+        prev_heading = heading
 
     kb_thread = threading.Thread(target=keyboard_thread, args=(controller,))
     kb_thread.start()
